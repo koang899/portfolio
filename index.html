@@ -53,6 +53,14 @@
 
   /* hero */
   .hero{padding:100px 0 80px;}
+  .hero .hero-grid{display:flex;gap:44px;align-items:flex-start;}
+  .hero .hero-photo{flex:0 0 auto;width:150px;height:150px;border-radius:50%;overflow:hidden;border:2px solid var(--infra);}
+  .hero .hero-photo img{display:block;width:100%;height:100%;object-fit:cover;}
+  .hero .hero-main{flex:1 1 auto;min-width:0;}
+  @media(max-width:720px){
+    .hero .hero-grid{flex-direction:column;align-items:center;text-align:center;}
+    .hero .contact-row,.hero .cta-row{justify-content:center;}
+  }
   .hero .role-tag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-dim);margin-bottom:18px;}
   .hero h1{font-size:clamp(32px,5.4vw,54px);font-weight:700;letter-spacing:-.01em;max-width:820px;}
   .hero h1 .t1{color:var(--infra);}
@@ -160,22 +168,27 @@
 
 <header class="hero">
   <div class="wrap">
-    <div class="role-tag mono">FIELD SERVICE ENGINEER · IT &amp; NETWORK SUPPORT · OPEN TO WORK &amp; FREELANCE</div>
-    <h1>ดูแลได้ทั้ง <span class="t1">โครงสร้างพื้นฐาน IT</span><br>และ <span class="t2">พัฒนาเว็บด้วย AI</span></h1>
-    <p class="lead">
-      สุเมธ ภูภักดี — วิศวกรคอมพิวเตอร์ที่มีประสบการณ์ตรงในการดูแลระบบเครือข่าย เซิร์ฟเวอร์ และ IT Support
-      ในโรงงานอุตสาหกรรม ควบคู่ไปกับการพัฒนาเว็บไซต์โดยใช้ AI ช่วยเขียนโค้ด
-      พร้อมเปิดรับทั้งงานประจำ (เปลี่ยนงาน) และงานอิสระ
-    </p>
-    <div class="contact-row">
-      <a href="mailto:sumetphuphakdee@gmail.com">✉ sumetphuphakdee@gmail.com</a>
-      <a href="tel:0927700263">☎ 092-770-0263</a>
-      <span>📍 Prachinburi, Thailand</span>
-      <span>🛂 Passport Ready</span>
-    </div>
-    <div class="cta-row">
-      <a class="btn" href="#contact">ติดต่องาน</a>
-      <a class="btn code" href="#tracks">ดูสายงานทั้งสอง</a>
+    <div class="hero-grid">
+      <div class="hero-photo"><img src="assets/profile.jpg" alt="Sumet Phuphakdee"></div>
+      <div class="hero-main">
+        <div class="role-tag mono">FIELD SERVICE ENGINEER · IT &amp; NETWORK SUPPORT · OPEN TO WORK &amp; FREELANCE</div>
+        <h1>ดูแลได้ทั้ง <span class="t1">โครงสร้างพื้นฐาน IT</span><br>และ <span class="t2">พัฒนาเว็บด้วย AI</span></h1>
+        <p class="lead">
+          สุเมธ ภูภักดี — วิศวกรคอมพิวเตอร์ที่มีประสบการณ์ตรงในการดูแลระบบเครือข่าย เซิร์ฟเวอร์ และ IT Support
+          ในโรงงานอุตสาหกรรม ควบคู่ไปกับการพัฒนาเว็บไซต์โดยใช้ AI ช่วยเขียนโค้ด
+          พร้อมเปิดรับทั้งงานประจำ (เปลี่ยนงาน) และงานอิสระ
+        </p>
+        <div class="contact-row">
+          <a href="mailto:sumetphuphakdee@gmail.com">✉ sumetphuphakdee@gmail.com</a>
+          <a href="tel:0927700263">☎ 092-770-0263</a>
+          <span>📍 Prachinburi, Thailand</span>
+          <span>🛂 Passport Ready</span>
+        </div>
+        <div class="cta-row">
+          <a class="btn" href="#contact">ติดต่องาน</a>
+          <a class="btn code" href="#tracks">ดูสายงานทั้งสอง</a>
+        </div>
+      </div>
     </div>
   </div>
 </header>
