@@ -113,6 +113,18 @@
   .edu-item h3{font-size:16px;font-weight:600;margin-bottom:4px;}
   .edu-item .edu-sub{color:var(--ink-dim);font-size:13.5px;font-family:'JetBrains Mono',monospace;}
 
+  /* certificates */
+  .cert-marquee{width:100%;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);}
+  .cert-track{display:flex;gap:20px;width:max-content;will-change:transform;animation:cert-scroll 40s linear infinite;}
+  .cert-marquee:hover .cert-track{animation-play-state:paused;}
+  .cert-card{flex:0 0 auto;width:260px;border:1px solid var(--line);background:var(--bg-alt);border-radius:var(--radius);overflow:hidden;}
+  .cert-card img{display:block;width:260px;height:180px;object-fit:cover;background:#0B0D11;}
+  .cert-card .cert-cap{padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-dim);border-top:1px solid var(--line);}
+  @keyframes cert-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+  .cert-add{margin-top:24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .cert-add input[type=file]{display:none;}
+  .cert-hint{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-dim);}
+
   /* contact */
   .contact{text-align:center;padding-top:90px;padding-bottom:100px;border-bottom:none;}
   .contact h2{font-size:32px;margin-bottom:16px;}
@@ -140,6 +152,7 @@
       <a href="#experience">EXPERIENCE</a>
       <a href="#projects">PROJECTS</a>
       <a href="#education">EDUCATION</a>
+      <a href="#certificates">CERTIFICATES</a>
       <a href="#contact">CONTACT</a>
     </div>
   </div>
@@ -380,6 +393,25 @@
   </div>
 </section>
 
+<section id="certificates">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>ใบรับรอง / ประกาศนียบัตร</h2>
+      <div class="dim mono">CERTIFICATES</div>
+    </div>
+
+    <div class="cert-marquee">
+      <div class="cert-track" id="certTrack"></div>
+    </div>
+
+    <div class="cert-add">
+      <label class="btn" for="certUpload">+ เพิ่มรูปใบรับรอง</label>
+      <input type="file" id="certUpload" accept="image/*" multiple>
+      <span class="cert-hint">รองรับ JPG / PNG · แสดงผลชั่วคราวในเบราว์เซอร์นี้ · วางไฟล์จริงไว้ที่โฟลเดอร์ certificates/ เพื่อให้ติดถาวร</span>
+    </div>
+  </div>
+</section>
+
 <section id="contact" class="contact">
   <div class="wrap">
     <div class="eyebrow" style="justify-content:center;">GET IN TOUCH</div>
@@ -391,5 +423,48 @@
 
 <footer>© 2569 SUMET PHUPHAKDEE — INFRASTRUCTURE ENGINEER &amp; AI-ASSISTED DEVELOPER</footer>
 
+<script>
+  const certData = [
+    { src: "certificates/example-1.svg", caption: "ตัวอย่าง — วางไฟล์จริงไว้ในโฟลเดอร์ certificates/" },
+    { src: "certificates/example-2.svg", caption: "ตัวอย่าง — High Vocational Certificate" },
+    { src: "certificates/example-3.svg", caption: "ตัวอย่าง — Training / Workshop" },
+  ];
+
+  const certTrack = document.getElementById("certTrack");
+
+  function makeCard(item){
+    const card = document.createElement("div");
+    card.className = "cert-card";
+    const img = document.createElement("img");
+    img.src = item.src;
+    img.alt = item.caption;
+    img.loading = "lazy";
+    const cap = document.createElement("div");
+    cap.className = "cert-cap";
+    cap.textContent = item.caption;
+    card.appendChild(img);
+    card.appendChild(cap);
+    return card;
+  }
+
+  function renderCerts(){
+    certTrack.innerHTML = "";
+    // render twice back-to-back for a seamless infinite scroll
+    for (let copy = 0; copy < 2; copy++){
+      certData.forEach(item => certTrack.appendChild(makeCard(item)));
+    }
+  }
+  renderCerts();
+
+  document.getElementById("certUpload").addEventListener("change", (e) => {
+    const files = Array.from(e.target.files || []);
+    files.forEach(file => {
+      const url = URL.createObjectURL(file);
+      certData.push({ src: url, caption: file.name });
+    });
+    renderCerts();
+    e.target.value = "";
+  });
+</script>
 </body>
 </html>
