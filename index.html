@@ -154,11 +154,15 @@
   .web-project-table .wp-tags{display:flex;flex-wrap:wrap;gap:6px;}
   .web-project-table .wp-links{white-space:nowrap;}
   .web-project-table .wp-links a{white-space:nowrap;}
+  .web-project-table .wp-thumb{width:140px;}
+  .web-project-table .wp-thumb img{display:block;width:140px;height:90px;object-fit:cover;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg-alt);}
   @media(max-width:720px){
     .web-project-table thead{display:none;}
     .web-project-table, .web-project-table tbody, .web-project-table tr, .web-project-table td{display:block;width:100%;}
     .web-project-table tr{padding:14px 0;border-bottom:1px solid var(--line);}
     .web-project-table td{padding:4px 0;border-bottom:none;}
+    .web-project-table .wp-thumb{width:auto;margin-bottom:6px;}
+    .web-project-table .wp-thumb img{width:100%;height:auto;max-width:220px;aspect-ratio:140/90;}
   }
 
   /* education */
@@ -429,10 +433,11 @@
 
     <table class="web-project-table">
       <thead>
-        <tr><th>โปรเจกต์</th><th>เทคโนโลยี</th><th>ลิงก์</th></tr>
+        <tr><th></th><th>โปรเจกต์</th><th>เทคโนโลยี</th><th>ลิงก์</th></tr>
       </thead>
       <tbody>
         <tr>
+          <td class="wp-thumb"><img src="assets/village-preview.png" alt="ระบบบริหารจัดการนิติบุคคลหมู่บ้าน preview"></td>
           <td class="wp-name">ระบบบริหารจัดการนิติบุคคลหมู่บ้าน</td>
           <td>
             <div class="wp-tags">
@@ -446,6 +451,7 @@
           </td>
         </tr>
         <tr>
+          <td class="wp-thumb"><img src="assets/noc-preview-full.png" alt="NOC Dashboard preview"></td>
           <td class="wp-name">NOC Dashboard — Infrastructure Monitor (Demo)</td>
           <td>
             <div class="wp-tags">
@@ -457,6 +463,7 @@
           </td>
         </tr>
         <tr>
+          <td class="wp-thumb"><img src="assets/queue-preview-full.png" alt="QueueEasy preview"></td>
           <td class="wp-name">QueueEasy — ระบบจองคิวสำหรับร้านค้า (Demo)</td>
           <td>
             <div class="wp-tags">
