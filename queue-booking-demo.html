@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QueueEasy — ระบบจองคิวสำหรับร้านค้า (Demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F1115; --bg-alt:#171A20; --card:#1C2028; --line:#262B33;
+    --ink:#EDEFF3; --ink-dim:#8B93A1;
+    --teal:#29D9C2; --teal-dim:rgba(41,217,194,.12);
+    --amber:#FF8A3D; --amber-dim:rgba(255,138,61,.14);
+    --err:#FF5C6C;
+    --radius:6px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'IBM Plex Sans Thai',sans-serif;
+    background-image:radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0);
+    background-size:32px 32px;min-height:100vh;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;margin:0;}
+
+  header{
+    border-bottom:1px solid var(--line);padding:18px 24px;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+    position:sticky;top:0;background:rgba(15,17,21,.94);backdrop-filter:blur(6px);z-index:20;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand h1{font-size:18px;font-weight:700;}
+  .demo-badge{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;padding:4px 9px;border:1px solid var(--amber);color:var(--amber);border-radius:20px;}
+  .biz-select{
+    background:var(--card);border:1px solid var(--line);color:var(--ink);
+    font-family:'IBM Plex Sans Thai',sans-serif;font-size:13px;padding:9px 12px;border-radius:var(--radius);
+  }
+  .tabs{display:flex;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:4px;}
+  .tab-btn{
+    font-family:'JetBrains Mono',monospace;font-size:12px;padding:8px 16px;border-radius:4px;
+    background:transparent;border:none;color:var(--ink-dim);cursor:pointer;transition:.15s;
+  }
+  .tab-btn.active{background:var(--teal);color:#0F1115;font-weight:600;}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:32px 24px 60px;}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  .panel{background:var(--bg-alt);border:1px solid var(--line);border-radius:var(--radius);padding:28px;margin-bottom:20px;}
+  .panel h2{font-size:19px;margin-bottom:6px;}
+  .panel .desc{color:var(--ink-dim);font-size:13.5px;margin-bottom:22px;}
+
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--ink-dim);text-transform:uppercase;margin-bottom:7px;}
+  .field input,.field select{
+    width:100%;background:var(--card);border:1px solid var(--line);color:var(--ink);
+    font-family:'IBM Plex Sans Thai',sans-serif;font-size:14px;padding:11px 12px;border-radius:var(--radius);
+  }
+  .field input:focus,.field select:focus{outline:2px solid var(--teal);outline-offset:1px;}
+  .btn{
+    font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;padding:12px 22px;
+    border-radius:var(--radius);border:1px solid var(--teal);background:var(--teal);color:#0F1115;
+    cursor:pointer;transition:.15s;
+  }
+  .btn:hover{background:transparent;color:var(--teal);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .btn.ghost{background:transparent;color:var(--ink-dim);border-color:var(--line);}
+  .btn.ghost:hover{border-color:var(--teal);color:var(--teal);}
+  .btn.warn{border-color:var(--amber);background:var(--amber);}
+  .btn.warn:hover{background:transparent;color:var(--amber);}
+
+  /* my ticket card */
+  .ticket-card{
+    background:linear-gradient(135deg, var(--teal-dim), transparent);
+    border:1px solid var(--teal);border-radius:var(--radius);padding:26px;text-align:center;margin-bottom:20px;
+  }
+  .ticket-card .tnum{font-family:'Space Grotesk',sans-serif;font-size:52px;font-weight:700;color:var(--teal);line-height:1;}
+  .ticket-card .tlabel{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);letter-spacing:.1em;text-transform:uppercase;margin-top:6px;}
+  .ticket-card .tstatus{margin-top:14px;font-size:14px;}
+  .ticket-card .tstatus b{color:var(--teal);}
+
+  .now-serving{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
+  .ns-cell{flex:1;background:var(--bg-alt);padding:18px 20px;text-align:center;}
+  .ns-cell .label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;}
+  .ns-cell .val{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;}
+  .ns-cell .val.teal{color:var(--teal);}
+
+  .queue-list{list-style:none;margin:0;padding:0;}
+  .queue-list li{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 16px;border-bottom:1px solid var(--line);
+  }
+  .queue-list li:last-child{border-bottom:none;}
+  .q-num{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--teal);width:44px;}
+  .q-info{flex:1;padding:0 12px;}
+  .q-info .qname{font-size:14px;}
+  .q-info .qservice{font-size:12px;color:var(--ink-dim);}
+  .q-actions{display:flex;gap:8px;}
+  .q-actions button{
+    font-family:'JetBrains Mono',monospace;font-size:11px;padding:6px 10px;border-radius:4px;
+    border:1px solid var(--line);background:transparent;color:var(--ink-dim);cursor:pointer;
+  }
+  .q-actions button:hover{border-color:var(--teal);color:var(--teal);}
+  .empty-note{color:var(--ink-dim);font-size:13.5px;padding:20px 0;text-align:center;}
+
+  .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;}
+  .stat{background:var(--bg-alt);padding:18px 20px;}
+  .stat .label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;}
+  .stat .val{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;}
+
+  .toast-wrap{position:fixed;bottom:24px;right:24px;z-index:100;display:flex;flex-direction:column;gap:10px;}
+  .toast{
+    background:var(--amber);color:#0F1115;padding:14px 18px;border-radius:var(--radius);
+    font-size:13.5px;font-weight:600;max-width:300px;box-shadow:0 8px 24px rgba(0,0,0,.4);
+    animation:slidein .25s ease-out;
+  }
+  @keyframes slidein{from{transform:translateX(30px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+  .auto-row{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-dim);margin-bottom:20px;}
+  .footer-note{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);text-align:center;padding-top:30px;}
+
+  @media(max-width:640px){
+    .stat-row{grid-template-columns:1fr;}
+    .now-serving{flex-direction:column;}
+    header{padding:14px 16px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1 id="bizIcon">📋 QueueEasy</h1>
+    <span class="demo-badge">DEMO</span>
+  </div>
+  <select class="biz-select" id="bizSelect">
+    <option value="salon">💇 ร้านตัดผม / เสริมสวย</option>
+    <option value="clinic">🦷 คลินิกทันตกรรม</option>
+    <option value="restaurant">🍜 ร้านอาหาร</option>
+    <option value="garage">🔧 อู่ซ่อมรถ</option>
+  </select>
+  <div class="tabs">
+    <button class="tab-btn active" data-view="customer">ลูกค้า / จองคิว</button>
+    <button class="tab-btn" data-view="admin">จัดการร้าน (แอดมิน)</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- CUSTOMER VIEW -->
+  <div class="view active" id="view-customer">
+
+    <div class="now-serving">
+      <div class="ns-cell"><div class="label">กำลังเรียกคิวที่</div><div class="val teal" id="nsCurrent">—</div></div>
+      <div class="ns-cell"><div class="label">คิวที่รออยู่</div><div class="val" id="nsWaiting">0</div></div>
+      <div class="ns-cell"><div class="label">เวลารอโดยประมาณ</div><div class="val" id="nsWait">—</div></div>
+    </div>
+
+    <div id="myTicketBox"></div>
+
+    <div class="panel" id="bookingPanel">
+      <h2>จองคิวออนไลน์</h2>
+      <div class="desc" id="bizDesc">กรอกข้อมูลเพื่อรับคิว ไม่ต้องเดินทางมารอที่ร้าน</div>
+      <form id="bookForm">
+        <div class="field">
+          <label>ชื่อ</label>
+          <input type="text" id="custName" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label>เบอร์โทร</label>
+          <input type="tel" id="custPhone" required autocomplete="tel">
+        </div>
+        <div class="field">
+          <label>บริการที่ต้องการ</label>
+          <select id="custService" required></select>
+        </div>
+        <button type="submit" class="btn">รับคิว</button>
+        <button type="button" class="btn ghost" id="notifyPermBtn" style="margin-left:8px;">🔔 เปิดแจ้งเตือน</button>
+      </form>
+    </div>
+
+    <div class="footer-note">ระบบจำลองสำหรับสาธิต — ข้อมูลไม่ถูกบันทึกถาวร รีเฟรชหน้าเพื่อรีเซ็ต</div>
+  </div>
+
+  <!-- ADMIN VIEW -->
+  <div class="view" id="view-admin">
+    <div class="stat-row">
+      <div class="stat"><div class="label">รอคิวทั้งหมด</div><div class="val" id="stWaiting">0</div></div>
+      <div class="stat"><div class="label">ให้บริการแล้ววันนี้</div><div class="val" id="stServed">0</div></div>
+      <div class="stat"><div class="label">เวลาเฉลี่ย/คิว</div><div class="val" id="stAvg">4 นาที</div></div>
+    </div>
+
+    <div class="auto-row">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+        <input type="checkbox" id="autoDemo"> โหมดสาธิตอัตโนมัติ (เรียกคิวเองทุก 5 วิ)
+      </label>
+    </div>
+
+    <div class="panel">
+      <h2>คิวกำลังรอ</h2>
+      <div class="desc">กดเรียกคิวถัดไปเมื่อพร้อมให้บริการ</div>
+      <button class="btn" id="callNextBtn">📢 เรียกคิวถัดไป</button>
+      <button class="btn ghost" id="addWalkinBtn" style="margin-left:8px;">➕ เพิ่มลูกค้า Walk-in</button>
+      <ul class="queue-list" id="adminQueueList" style="margin-top:20px;"></ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+  const businesses = {
+    salon: {
+      icon:"💇", name:"QueueEasy — ร้านตัดผม", desc:"จองคิวตัดผม/ทำสีผม ไม่ต้องนั่งรอที่ร้าน",
+      services:["ตัดผม","สระ + ไดร์","ทำสีผม","ดัดผม"]
+    },
+    clinic: {
+      icon:"🦷", name:"QueueEasy — คลินิกทันตกรรม", desc:"จองคิวตรวจฟันล่วงหน้า ลดเวลารอที่คลินิก",
+      services:["ตรวจฟันทั่วไป","ขูดหินปูน","อุดฟัน","ถอนฟัน"]
+    },
+    restaurant: {
+      icon:"🍜", name:"QueueEasy — ร้านอาหาร", desc:"จองโต๊ะล่วงหน้า ไม่ต้องยืนรอหน้าร้าน",
+      services:["โต๊ะ 2 ที่นั่ง","โต๊ะ 4 ที่นั่ง","โต๊ะกลุ่ม (5+ ที่นั่ง)"]
+    },
+    garage: {
+      icon:"🔧", name:"QueueEasy — อู่ซ่อมรถ", desc:"จองคิวเข้าอู่ล่วงหน้า วางแผนเวลาได้แม่นยำขึ้น",
+      services:["เช็คระยะ","เปลี่ยนถ่ายน้ำมันเครื่อง","ซ่อมทั่วไป","เช็คช่วงล่าง"]
+    }
+  };
+
+  let currentBiz = 'salon';
+  let queue = [];          // {num, name, phone, service, status}
+  let currentServing = 0;
+  let nextNumber = 1;
+  let servedToday = 0;
+  let myTicketNum = null;
+  let notifiedClose = false;
+
+  function applyBusiness(key){
+    currentBiz = key;
+    const b = businesses[key];
+    document.getElementById('bizIcon').textContent = b.icon + " QueueEasy";
+    document.getElementById('bizDesc').textContent = b.desc;
+    const svcSelect = document.getElementById('custService');
+    svcSelect.innerHTML = b.services.map(s => `<option>${s}</option>`).join('');
+    // reset queue when switching business (fresh demo)
+    queue = []; currentServing = 0; nextNumber = 1; servedToday = 0; myTicketNum = null;
+    renderAll();
+  }
+
+  function switchTab(view){
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active');
+  }
+
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.view));
+  });
+
+  document.getElementById('bizSelect').addEventListener('change', e => applyBusiness(e.target.value));
+
+  document.getElementById('bookForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = document.getElementById('custName').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    const service = document.getElementById('custService').value;
+    const num = nextNumber++;
+    queue.push({num, name, phone, service, status:'waiting'});
+    myTicketNum = num;
+    notifiedClose = false;
+    e.target.reset();
+    document.getElementById('custService').selectedIndex = 0;
+    renderAll();
+    showToast(`รับคิวสำเร็จ! หมายเลขคิวของคุณคือ #${num}`);
+  });
+
+  document.getElementById('notifyPermBtn').addEventListener('click', () => {
+    if(!('Notification' in window)){ showToast('เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน'); return; }
+    Notification.requestPermission().then(p => {
+      showToast(p === 'granted' ? 'เปิดการแจ้งเตือนแล้ว 🔔' : 'ยังไม่ได้เปิดการแจ้งเตือน');
+    });
+  });
+
+  document.getElementById('callNextBtn').addEventListener('click', callNext);
+  document.getElementById('addWalkinBtn').addEventListener('click', () => {
+    const num = nextNumber++;
+    const b = businesses[currentBiz];
+    queue.push({num, name:'Walk-in', phone:'-', service: b.services[0], status:'waiting'});
+    renderAll();
+  });
+
+  function callNext(){
+    const waiting = queue.filter(q => q.status === 'waiting');
+    if(waiting.length === 0) return;
+    const nextQ = waiting[0];
+    nextQ.status = 'served';
+    currentServing = nextQ.num;
+    servedToday++;
+    renderAll();
+    checkMyTicketNotify();
+  }
+
+  document.getElementById('autoDemo').addEventListener('change', e => {
+    if(e.target.checked){
+      window._autoInterval = setInterval(() => {
+        if(queue.filter(q=>q.status==='waiting').length > 0) callNext();
+      }, 5000);
+    } else {
+      clearInterval(window._autoInterval);
+    }
+  });
+
+  function checkMyTicketNotify(){
+    if(myTicketNum === null) return;
+    const waitingAhead = queue.filter(q => q.status === 'waiting' && q.num < myTicketNum).length;
+    if(waitingAhead <= 1 && !notifiedClose){
+      notifiedClose = true;
+      showToast(`⏰ คิวของคุณ #${myTicketNum} ใกล้ถึงแล้ว! เหลืออีก ${waitingAhead} คิว`);
+      if('Notification' in window && Notification.permission === 'granted'){
+        new Notification('คิวใกล้ถึงแล้ว!', { body:`คิว #${myTicketNum} เหลืออีก ${waitingAhead} คิวก่อนถึงคุณ` });
+      }
+    }
+  }
+
+  function showToast(msg){
+    const wrap = document.getElementById('toastWrap');
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    wrap.appendChild(t);
+    setTimeout(() => t.remove(), 5000);
+  }
+
+  function renderAll(){
+    const waiting = queue.filter(q => q.status === 'waiting');
+    document.getElementById('nsCurrent').textContent = currentServing || '—';
+    document.getElementById('nsWaiting').textContent = waiting.length;
+    document.getElementById('nsWait').textContent = waiting.length ? (waiting.length * 4) + ' นาที' : '—';
+
+    // my ticket box
+    const box = document.getElementById('myTicketBox');
+    if(myTicketNum){
+      const mine = queue.find(q => q.num === myTicketNum);
+      const ahead = queue.filter(q => q.status === 'waiting' && q.num < myTicketNum).length;
+      let statusText = '';
+      if(mine.status === 'served'){
+        statusText = `<span style="color:var(--teal)">ถึงคิวของคุณแล้ว — เชิญเข้ารับบริการ</span>`;
+      } else {
+        statusText = `รออีก <b>${ahead}</b> คิวก่อนถึงคุณ`;
+      }
+      box.innerHTML = `
+        <div class="ticket-card">
+          <div class="tnum">#${myTicketNum}</div>
+          <div class="tlabel">Your Ticket</div>
+          <div class="tstatus">${statusText}</div>
+        </div>`;
+      checkMyTicketNotify();
+    } else {
+      box.innerHTML = '';
+    }
+
+    // admin list
+    const list = document.getElementById('adminQueueList');
+    if(waiting.length === 0){
+      list.innerHTML = '<div class="empty-note">ไม่มีคิวที่รออยู่</div>';
+    } else {
+      list.innerHTML = waiting.map(q => `
+        <li>
+          <div class="q-num">#${q.num}</div>
+          <div class="q-info"><div class="qname">${q.name}</div><div class="qservice">${q.service} · ${q.phone}</div></div>
+          <div class="q-actions"><button onclick="skipQueue(${q.num})">ข้าม</button></div>
+        </li>
+      `).join('');
+    }
+    document.getElementById('stWaiting').textContent = waiting.length;
+    document.getElementById('stServed').textContent = servedToday;
+  }
+
+  function skipQueue(num){
+    const q = queue.find(q => q.num === num);
+    if(q) q.status = 'skipped';
+    renderAll();
+  }
+  window.skipQueue = skipQueue;
+
+  applyBusiness('salon');
+</script>
+
+</body>
+</html>
