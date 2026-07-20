@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOC Dashboard — Infrastructure Monitor (Demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F1115; --bg-alt:#171A20; --line:#262B33;
+    --ink:#EDEFF3; --ink-dim:#8B93A1;
+    --ok:#29D9C2; --ok-dim:rgba(41,217,194,.12);
+    --warn:#FF8A3D; --warn-dim:rgba(255,138,61,.12);
+    --err:#FF5C6C; --err-dim:rgba(255,92,108,.12);
+    --radius:4px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'IBM Plex Sans Thai',sans-serif;
+    background-image:radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0);
+    background-size:32px 32px;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  header{
+    border-bottom:1px solid var(--line);padding:20px 28px;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+    position:sticky;top:0;background:rgba(15,17,21,.92);backdrop-filter:blur(6px);z-index:10;
+  }
+  .title-block h1{font-family:'Space Grotesk',sans-serif;font-size:19px;margin:0 0 4px;font-weight:600;}
+  .title-block .sub{font-size:12px;color:var(--ink-dim);font-family:'JetBrains Mono',monospace;}
+  .demo-badge{
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;
+    padding:5px 10px;border:1px solid var(--warn);color:var(--warn);border-radius:var(--radius);
+  }
+  .clock{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink-dim);text-align:right;}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px;}
+
+  .summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:28px;}
+  .stat{background:var(--bg-alt);padding:20px 22px;}
+  .stat .label{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:8px;}
+  .stat .val{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;}
+  .stat .val.ok{color:var(--ok);}
+  .stat .val.err{color:var(--err);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:32px;}
+  .card{
+    background:var(--bg-alt);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;transition:border-color .3s;
+  }
+  .card.online{border-left:3px solid var(--ok);}
+  .card.warning{border-left:3px solid var(--warn);}
+  .card.offline{border-left:3px solid var(--err);}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+  .card h3{font-family:'Space Grotesk',sans-serif;font-size:15px;margin:0 0 3px;font-weight:600;}
+  .card .ip{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-dim);}
+  .badge{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;padding:3px 8px;border-radius:20px;text-transform:uppercase;white-space:nowrap;}
+  .badge.online{background:var(--ok-dim);color:var(--ok);}
+  .badge.warning{background:var(--warn-dim);color:var(--warn);}
+  .badge.offline{background:var(--err-dim);color:var(--err);}
+  .card-metrics{display:flex;gap:18px;margin-top:14px;font-family:'JetBrains Mono',monospace;}
+  .metric .m-label{font-size:9.5px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+  .metric .m-val{font-size:14px;font-weight:600;}
+  .spark{margin-top:12px;height:28px;width:100%;}
+
+  .footer-note{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-dim);
+    text-align:center;padding:20px 0 6px;border-top:1px solid var(--line);
+  }
+
+  @media(max-width:640px){
+    .summary-row{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-block">
+    <h1>🖥 NOC — Network Operations Center</h1>
+    <div class="sub">Infrastructure Monitor · Sumet Phuphakdee</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="demo-badge">DEMO — SIMULATED DATA</div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="summary-row">
+    <div class="stat"><div class="label">Devices Monitored</div><div class="val" id="statTotal">—</div></div>
+    <div class="stat"><div class="label">Online</div><div class="val ok" id="statOnline">—</div></div>
+    <div class="stat"><div class="label">Issues</div><div class="val err" id="statIssues">—</div></div>
+    <div class="stat"><div class="label">Avg Latency</div><div class="val" id="statLatency">—</div></div>
+  </div>
+
+  <div class="grid" id="deviceGrid"></div>
+
+  <div class="footer-note">
+    ตัวอย่าง Dashboard สำหรับ Portfolio — จำลองข้อมูลอุปกรณ์เครือข่ายและเซิร์ฟเวอร์ในโรงงานอุตสาหกรรม
+    (Core Switch, Firewall, Server, CCTV/NVR, Access Control) อัปเดตทุก 3 วินาที
+  </div>
+</div>
+
+<script>
+  const devices = [
+    { name:"Core Switch — L3", ip:"10.10.0.1", type:"Cisco Catalyst 9300", baseLatency:1, flaky:false },
+    { name:"FortiGate Firewall", ip:"10.10.0.2", type:"FortiGate 100F", baseLatency:2, flaky:false },
+    { name:"File Server", ip:"10.10.1.10", type:"Windows Server 2019", baseLatency:4, flaky:false },
+    { name:"Virtualization Host", ip:"10.10.1.11", type:"VMware ESXi", baseLatency:5, flaky:false },
+    { name:"CCTV NVR — Line A", ip:"10.10.2.20", type:"16-Channel NVR", baseLatency:8, flaky:true },
+    { name:"Access Control Server", ip:"10.10.2.21", type:"Face Scan / Card System", baseLatency:6, flaky:false },
+    { name:"Production Line Gateway", ip:"10.10.3.30", type:"PLC / SCADA Gateway", baseLatency:12, flaky:true },
+    { name:"Wireless AP — Zone 2", ip:"10.10.4.40", type:"H3C Access Point", baseLatency:9, flaky:false },
+    { name:"SQL Server", ip:"10.10.1.12", type:"Microsoft SQL Server", baseLatency:3, flaky:false },
+  ];
+
+  const state = devices.map(d => ({
+    ...d,
+    status: "online",
+    latency: d.baseLatency + Math.random()*3,
+    uptime: 99.9,
+    history: Array.from({length:20}, () => d.baseLatency + Math.random()*3),
+  }));
+
+  const grid = document.getElementById('deviceGrid');
+
+  function sparkSVG(history, color){
+    const w=240,h=28, max=Math.max(...history,1), min=0;
+    const pts = history.map((v,i)=>{
+      const x = (i/(history.length-1))*w;
+      const y = h - ((v-min)/(max-min||1))*h;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>`;
+  }
+
+  function statusColor(status){
+    if(status==="online") return "var(--ok)";
+    if(status==="warning") return "var(--warn)";
+    return "var(--err)";
+  }
+
+  function render(){
+    grid.innerHTML = state.map((d, i) => `
+      <div class="card ${d.status}" id="card-${i}">
+        <div class="card-top">
+          <div>
+            <h3>${d.name}</h3>
+            <div class="ip">${d.ip} · ${d.type}</div>
+          </div>
+          <div class="badge ${d.status}">${d.status === 'online' ? 'Online' : d.status === 'warning' ? 'Warning' : 'Offline'}</div>
+        </div>
+        <div class="card-metrics">
+          <div class="metric"><div class="m-label">Latency</div><div class="m-val mono">${d.status==='offline' ? '—' : d.latency.toFixed(1)+' ms'}</div></div>
+          <div class="metric"><div class="m-label">Uptime</div><div class="m-val mono">${d.uptime.toFixed(2)}%</div></div>
+        </div>
+        ${sparkSVG(d.history, statusColor(d.status))}
+      </div>
+    `).join('');
+    updateStats();
+  }
+
+  function updateStats(){
+    document.getElementById('statTotal').textContent = state.length;
+    const online = state.filter(d=>d.status==='online').length;
+    const issues = state.length - online;
+    document.getElementById('statOnline').textContent = online;
+    document.getElementById('statIssues').textContent = issues;
+    const avgLat = state.filter(d=>d.status!=='offline').reduce((a,d)=>a+d.latency,0) / Math.max(1, state.filter(d=>d.status!=='offline').length);
+    document.getElementById('statLatency').textContent = avgLat.toFixed(1) + ' ms';
+  }
+
+  function tick(){
+    state.forEach(d => {
+      // small chance of a status change for flaky devices
+      const roll = Math.random();
+      if(d.flaky && roll < 0.06){
+        d.status = 'offline';
+      } else if(d.flaky && roll < 0.14){
+        d.status = 'warning';
+      } else if(!d.flaky && roll < 0.015){
+        d.status = 'warning';
+      } else {
+        d.status = 'online';
+      }
+
+      if(d.status === 'offline'){
+        d.uptime = Math.max(95, d.uptime - 0.05);
+      } else {
+        d.latency = Math.max(0.5, d.baseLatency + (Math.random()-0.5)*4 + (d.status==='warning' ? 15 : 0));
+        d.history.push(d.latency);
+        if(d.history.length > 20) d.history.shift();
+        d.uptime = Math.min(99.99, d.uptime + 0.002);
+      }
+    });
+    render();
+  }
+
+  function updateClock(){
+    document.getElementById('clock').textContent = new Date().toLocaleTimeString('th-TH', { hour12:false });
+  }
+
+  render();
+  updateClock();
+  setInterval(tick, 3000);
+  setInterval(updateClock, 1000);
+</script>
+
+</body>
+</html>
