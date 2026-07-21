@@ -4,6 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sumet Phuphakdee — Infrastructure Engineer &amp; AI-Assisted Developer</title>
+<meta name="description" content="สุเมธ ภูภักดี — วิศวกรคอมพิวเตอร์สาย Infrastructure (Network / Server / IT Support) และ Programmer ที่ใช้ AI ช่วยพัฒนาเว็บไซต์ ดูผลงานและติดต่องานได้ที่นี่">
+<meta name="keywords" content="Sumet Phuphakdee, สุเมธ ภูภักดี, Infrastructure Engineer, IT Support, Network Engineer, Web Developer, AI-Assisted Development, Portfolio">
+<meta name="author" content="Sumet Phuphakdee">
+<link rel="canonical" href="https://portfolio-phi-henna-udks9n6u3g.vercel.app/">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://portfolio-phi-henna-udks9n6u3g.vercel.app/">
+<meta property="og:title" content="Sumet Phuphakdee — Infrastructure Engineer & AI-Assisted Developer">
+<meta property="og:description" content="ดูแลได้ทั้งโครงสร้างพื้นฐาน IT และพัฒนาเว็บด้วย AI — วิศวกรคอมพิวเตอร์สาย Infrastructure และ Programmer">
+<meta property="og:image" content="https://portfolio-phi-henna-udks9n6u3g.vercel.app/assets/og-image.png">
+<meta property="og:locale" content="th_TH">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sumet Phuphakdee — Infrastructure Engineer & AI-Assisted Developer">
+<meta name="twitter:description" content="ดูแลได้ทั้งโครงสร้างพื้นฐาน IT และพัฒนาเว็บด้วย AI">
+<meta name="twitter:image" content="https://portfolio-phi-henna-udks9n6u3g.vercel.app/assets/og-image.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -48,6 +65,12 @@
   .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
   section{padding:96px 0;border-bottom:1px solid var(--line);}
   h1,h2,h3{font-family:'IBM Plex Sans Thai',sans-serif;margin:0;}
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in-view{opacity:1;transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+  }
 
   .eyebrow{
     font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;
@@ -165,6 +188,23 @@
     .web-project-table .wp-thumb img{width:100%;height:auto;max-width:220px;aspect-ratio:140/90;}
   }
 
+  /* case study */
+  .case-study{border:1px solid var(--line);background:var(--bg-alt);padding:36px;}
+  .case-study .cs-tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--infra);margin-bottom:12px;}
+  .case-study h3{font-size:22px;font-weight:600;margin-bottom:8px;}
+  .case-study .cs-sub{color:var(--ink-dim);font-size:13.5px;margin-bottom:28px;}
+  .cs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:24px;}
+  .cs-col{background:var(--bg);padding:22px;}
+  .cs-col .cs-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+  .cs-col.problem .cs-label{color:var(--code);}
+  .cs-col.solution .cs-label{color:var(--infra);}
+  .cs-col.result .cs-label{color:#4ADE80;}
+  .cs-col p, .cs-col ul{color:var(--ink-dim);font-size:13.5px;margin:0;padding-left:0;list-style:none;}
+  .cs-col li{margin-bottom:8px;padding-left:14px;position:relative;}
+  .cs-col li::before{content:"–";position:absolute;left:0;color:var(--ink-dim);}
+  .cs-stack{display:flex;flex-wrap:wrap;gap:8px;}
+  @media(max-width:720px){.cs-grid{grid-template-columns:1fr;}}
+
   /* education */
   .edu-item{padding:20px 0;border-top:1px solid var(--line);}
   .edu-item:first-child{border-top:none;}
@@ -196,6 +236,17 @@
   .faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease;}
   .faq-a p{color:var(--ink-dim);margin:0 0 22px;max-width:720px;font-size:14.5px;}
   .faq-item.open .faq-a{max-height:240px;}
+
+  /* testimonials */
+  .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  .testi-card{background:var(--bg);padding:28px;display:flex;flex-direction:column;gap:16px;}
+  .testi-card .testi-quote{color:var(--ink-dim);font-size:14px;line-height:1.7;flex:1;}
+  .testi-card .testi-who{display:flex;align-items:center;gap:12px;}
+  .testi-avatar{width:40px;height:40px;border-radius:50%;background:var(--bg-alt);border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);flex-shrink:0;}
+  .testi-name{font-size:13.5px;font-weight:600;color:var(--ink);}
+  .testi-role{font-size:12px;color:var(--ink-dim);}
+  .testi-placeholder{font-style:italic;opacity:.7;}
+  @media(max-width:720px){.testi-grid{grid-template-columns:1fr;}}
 
   /* contact */
   .contact{text-align:center;padding-top:90px;padding-bottom:100px;border-bottom:none;}
@@ -269,7 +320,7 @@
 </header>
 
 <section id="tracks">
-  <div class="wrap">
+  <div class="wrap reveal">
     <div class="sec-head">
       <h2>สองสายงานที่ผมทำ</h2>
       <div class="dim mono">DUAL TRACK</div>
@@ -306,7 +357,7 @@
 </section>
 
 <section id="skills">
-  <div class="wrap">
+  <div class="wrap reveal">
     <div class="sec-head">
       <h2>ทักษะทางเทคนิค</h2>
       <div class="dim mono">TECHNICAL SKILLS</div>
@@ -350,7 +401,7 @@
 </section>
 
 <section id="experience">
-  <div class="wrap">
+  <div class="wrap reveal">
     <div class="sec-head">
       <h2>ประสบการณ์ทำงาน</h2>
       <div class="dim mono">WORK EXPERIENCE</div>
@@ -401,7 +452,7 @@
 </section>
 
 <section id="projects">
-  <div class="wrap">
+  <div class="wrap reveal">
     <div class="sec-head">
       <h2>โปรเจกต์สำคัญ</h2>
       <div class="dim mono">KEY PROJECTS</div>
@@ -476,11 +527,48 @@
         </tr>
       </tbody>
     </table>
+
+    <div class="case-study" style="margin-top:32px;">
+      <div class="cs-tag">CASE STUDY</div>
+      <h3>ระบบบริหารจัดการนิติบุคคลหมู่บ้าน</h3>
+      <p class="cs-sub">Full-stack web app (Next.js / TypeScript / Prisma / PostgreSQL) — ตัวอย่างการคิดกระบวนการแก้ปัญหาไม่ใช่แค่ผลลัพธ์สุดท้าย</p>
+
+      <div class="cs-grid">
+        <div class="cs-col problem">
+          <div class="cs-label">Problem</div>
+          <ul>
+            <li>นิติบุคคลหมู่บ้านจัดเก็บค่าส่วนกลางด้วยกระดาษและ Excel ตรวจสอบสลิปโอนเงินด้วยมือ เสี่ยงข้อมูลตกหล่น</li>
+            <li>ลูกบ้านไม่มีช่องทางแจ้งซ่อม/ร้องเรียน/ติดตามสถานะบิลของตัวเองแบบเรียลไทม์</li>
+            <li>รปภ. ไม่มีระบบบันทึกผู้มาเยือนที่เชื่อมกับข้อมูลบ้านส่วนกลาง</li>
+          </ul>
+        </div>
+        <div class="cs-col solution">
+          <div class="cs-label">Solution</div>
+          <ul>
+            <li>ออกแบบ role-based access control แยกสิทธิ์ resident / staff / security ผ่าน JWT</li>
+            <li>ระบบแจ้งบิลค่าส่วนกลางอัตโนมัติพร้อมอัปโหลดสลิปให้ตรวจสอบ</li>
+            <li>โมดูลแจ้งซ่อม ลงทะเบียนสัตว์เลี้ยง ร้องเรียน และปุ่ม SOS แจ้งเหตุด่วนที่ รปภ. เห็นแบบ live</li>
+          </ul>
+        </div>
+        <div class="cs-col result">
+          <div class="cs-label">Result</div>
+          <ul>
+            <li>ลดขั้นตอนตรวจสอบสลิปโอนเงินที่ทำด้วยมือทั้งหมด</li>
+            <li>ลูกบ้านติดตามสถานะเรื่องแจ้งซ่อม/ร้องเรียนได้เองโดยไม่ต้องโทรถามนิติ</li>
+            <li>วางสถาปัตยกรรมให้ต่อยอดเป็นระบบให้บริการหลายหมู่บ้านได้ในอนาคต</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cs-stack">
+        <span class="tag">Next.js</span><span class="tag">TypeScript</span><span class="tag">Prisma</span><span class="tag">PostgreSQL</span><span class="tag">JWT Auth</span>
+      </div>
+    </div>
   </div>
 </section>
 
 <section id="education">
-  <div class="wrap">
+  <div class="wrap reveal">
     <div class="sec-head">
       <h2>การศึกษา</h2>
       <div class="dim mono">EDUCATION</div>
@@ -506,7 +594,7 @@
 </section>
 
 <section id="certificates">
-  <div class="wrap">
+  <div class="wrap reveal">
     <div class="sec-head">
       <h2>ใบรับรอง / ประกาศนียบัตร</h2>
       <div class="dim mono">CERTIFICATES</div>
@@ -525,7 +613,7 @@
 </section>
 
 <section id="faq">
-  <div class="wrap">
+  <div class="wrap reveal">
     <div class="sec-head">
       <h2>คำถามที่พบบ่อย</h2>
       <div class="dim mono">FAQ</div>
@@ -566,6 +654,48 @@
           <span class="faq-icon">+</span>
         </button>
         <div class="faq-a"><p>ใช้ AI เป็นเครื่องมือช่วยเร่งความเร็วในการพัฒนา แต่ทุกส่วนของโค้ดจะถูกตรวจสอบ ทดสอบ และปรับแก้โดยผมเองก่อนส่งมอบ เพื่อให้มั่นใจว่าใช้งานได้จริงและตรงตามความต้องการของลูกค้า</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="testimonials">
+  <div class="wrap reveal">
+    <div class="sec-head">
+      <h2>เสียงจากผู้ร่วมงาน</h2>
+      <div class="dim mono">TESTIMONIALS</div>
+    </div>
+
+    <div class="testi-grid">
+      <div class="testi-card">
+        <p class="testi-quote testi-placeholder">"พื้นที่นี้เตรียมไว้สำหรับคำแนะนำจากหัวหน้างานหรือลูกค้าที่เคยร่วมงานกัน — จะอัปเดตเร็วๆ นี้"</p>
+        <div class="testi-who">
+          <div class="testi-avatar">?</div>
+          <div>
+            <div class="testi-name">รอเพิ่มข้อมูล</div>
+            <div class="testi-role">ตำแหน่ง / บริษัท</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <p class="testi-quote testi-placeholder">"พื้นที่นี้เตรียมไว้สำหรับคำแนะนำจากหัวหน้างานหรือลูกค้าที่เคยร่วมงานกัน — จะอัปเดตเร็วๆ นี้"</p>
+        <div class="testi-who">
+          <div class="testi-avatar">?</div>
+          <div>
+            <div class="testi-name">รอเพิ่มข้อมูล</div>
+            <div class="testi-role">ตำแหน่ง / บริษัท</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <p class="testi-quote testi-placeholder">"พื้นที่นี้เตรียมไว้สำหรับคำแนะนำจากหัวหน้างานหรือลูกค้าที่เคยร่วมงานกัน — จะอัปเดตเร็วๆ นี้"</p>
+        <div class="testi-who">
+          <div class="testi-avatar">?</div>
+          <div>
+            <div class="testi-name">รอเพิ่มข้อมูล</div>
+            <div class="testi-role">ตำแหน่ง / บริษัท</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -619,6 +749,24 @@
       item.classList.toggle("open");
     });
   });
+
+  // scroll-in reveal animation
+  (function(){
+    const targets = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window)) {
+      targets.forEach((el) => el.classList.add("in-view"));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -80px 0px" });
+    targets.forEach((el) => observer.observe(el));
+  })();
 
   const certData = [
     { src: "certificates/example-1.svg", caption: "ตัวอย่าง — วางไฟล์จริงไว้ในโฟลเดอร์ certificates/" },
